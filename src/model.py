@@ -191,13 +191,13 @@ class TrieNode:
         one_dict, total_one = self.search_one()
         for child in node.child:
             for ch in child.child:
-                if child.word_finish == True:
+                if ch.word_finish == True:
                     total += ch.count
 
         for child in node.child:
             for ch in child.child:
                 if ch.word_finish == True :
-                    PMI = math.log(ch.count, 2) - math.log(total, 2) - math.log(one_dict[child.char], 2) - math.log( one_dict[ch.char], 2)
+                    PMI = math.log(max(ch.count, 1), 2) - math.log(total, 2) - math.log(one_dict[child.char], 2) - math.log( one_dict[ch.char], 2)
                     # 这里做了PMI阈值约束
                     if PMI > self.PMI_limit:
                         result[child.char + '_' + ch.char] = (PMI,
