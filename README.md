@@ -1,3 +1,5 @@
+
+
 # 中文分词新词发现
 python3利用互信息和左右信息熵的中文分词新词发现
 
@@ -68,3 +70,7 @@ python3利用互信息和左右信息熵的中文分词新词发现
         [花呗， 蚂蚁花呗] --> [花呗]
 
 具体原理说明请看这个[链接](https://www.jianshu.com/p/e9313fd692ef)
+
+感谢
+========
+9/29/2018 感谢[jiangzhonglian](https://github.com/jiangzhonglian) 对代码进行的精简和注释补充
