@@ -22,8 +22,10 @@ python3利用互信息和左右信息熵的中文分词新词发现
     # 得到 TOP5 得分的新词
     # result里面存储的是所有新词和其得分，add_word里面是top5
     result, add_word = root.wordFind(5)
-    
-具体细节请参考demo.py
+
+> 运行： python demo_run.py  体验程序的快感
+
+具体细节请参考demo_run.py
 
 效果说明
 ========
@@ -64,6 +66,5 @@ python3利用互信息和左右信息熵的中文分词新词发现
 * 以得分高低进行排序，取出前5个，若前面的待选词在属于后面待选词一部分，则删除后面待选词，如
 
         [花呗， 蚂蚁花呗] --> [花呗]
- 
-        
+
 具体原理说明请看这个[链接](https://www.jianshu.com/p/e9313fd692ef)
