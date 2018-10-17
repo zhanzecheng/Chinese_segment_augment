@@ -5,60 +5,46 @@
 # @File    : utils.py
 # @Software: PyCharm
 """
+import pickle
 
 
-def getStopwords():
-    stopword = set()
+def get_stopwords():
     with open('data/stopword.txt', 'r') as f:
-        lines = f.readlines()
-        for line in lines:
-            stopword.add(line.strip())
-    return stopword
+        stopword = [line.strip() for line in f]
+    return set(stopword)
 
 
-def generate_ngram(data, n):
+def generate_ngram(input_list, n):
+    return zip(*[input_list[i:] for i in range(n)])
+
+
+def load_dictionary(filename):
     """
-    参数ngram特征
-    :param data: 数据集
-    :param n:    n gram
+    加载外部词频记录
+    :param filename:
     :return:
     """
-    result = []
-    # 对 n gram 依次进行输出，追加到result, 当发现 数组长度 < n gram，就不计算了
-    # i in (1, 2, .. n)
-    for i in range(1, n+1):
-        # 数组长度 < n gram，我们就停止 n gram 的计算
-        if len(data) - i < 0:
-            break
-        # len(data) - i + 1 找到最后结束的 index
-        for j in range(len(data) - i + 1):
-            # 顺序截取词的大小( n gram )
-            result.append(data[j:j+i])
-    return result
-
-
-def loadWords(filename):
-    # 加载外部词频记录
     word_freq = {}
     print('------> 加载外部词集')
     with open(filename, 'r') as f:
-        lines = f.readlines()
-        for line in lines:
-            line = line.split(' ')
-            # 规定最少词频
-            if int(line[1]) > 2:
-                word_freq[line[0]] = line[1]
+        for line in f:
+            try:
+                line_list = line.strip().split(' ')
+                # 规定最少词频
+                if int(line_list[1]) > 2:
+                    word_freq[line_list[0]] = line_list[1]
+            except IndexError as e:
+                print(line)
+                continue
     return word_freq
 
 
-def saveModel(model, filename):
-    import pickle
+def save_model(model, filename):
     with open(filename, 'wb') as fw:
         pickle.dump(model, fw)
 
 
-def loadModel(filename):
-    import pickle
+def load_model(filename):
     with open(filename, 'rb') as fr:
         model = pickle.load(fr)
     return model

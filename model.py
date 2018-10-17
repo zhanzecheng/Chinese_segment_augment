@@ -8,10 +8,11 @@
 import math
 
 
-class Node:
+class Node(object):
     """
     建立字典树的节点
     """
+
     def __init__(self, char):
         self.char = char
         # 记录是否完成
@@ -25,10 +26,11 @@ class Node:
         self.isback = False
 
 
-class TrieNode:
+class TrieNode(object):
     """
     建立前缀树，并且包含统计词频，计算左右熵，计算互信息的方法
     """
+
     def __init__(self, node, data=None, PMI_limit=20):
         """
         初始函数，data为外部词频数据集
@@ -154,11 +156,13 @@ class TrieNode:
             for ch in child.child:
                 if ch.word_finish is True:
                     # 互信息值越大，说明 a,b 两个词相关性越大
-                    PMI = math.log(max(ch.count, 1), 2) - math.log(total, 2) - math.log(one_dict[child.char], 2) - math.log(one_dict[ch.char], 2)
+                    PMI = math.log(max(ch.count, 1), 2) - math.log(total, 2) - math.log(one_dict[child.char],
+                                                                                        2) - math.log(one_dict[ch.char],
+                                                                                                      2)
                     # 这里做了PMI阈值约束
                     if PMI > self.PMI_limit:
                         # 例如: dict{ "a_b": (PMI, 出现概率), .. }
-                        result[child.char + '_' + ch.char] = (PMI, ch.count/total)
+                        result[child.char + '_' + ch.char] = (PMI, ch.count / total)
         return result
 
     def search_left(self):
@@ -181,7 +185,7 @@ class TrieNode:
                         total += ch.count
                 for ch in cha.child:
                     if ch.word_finish is True and ch.isback:
-                        p += (ch.count/total) * math.log(ch.count/total, 2)
+                        p += (ch.count / total) * math.log(ch.count / total, 2)
                 # 计算的是信息熵
                 result[child.char + cha.char] = -p
         return result
@@ -206,12 +210,12 @@ class TrieNode:
                         total += ch.count
                 for ch in cha.child:
                     if ch.word_finish is True and not ch.isback:
-                        p += (ch.count/total) * math.log(ch.count/total, 2)
+                        p += (ch.count / total) * math.log(ch.count / total, 2)
                 # 计算的是信息熵
                 result[child.char + cha.char] = -p
         return result
 
-    def wordFind(self, N):
+    def find_word(self, N):
         # 通过搜索得到互信息
         # 例如: dict{ "a_b": (PMI, 出现概率), .. }
         bi = self.search_bi()
