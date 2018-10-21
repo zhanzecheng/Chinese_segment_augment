@@ -21,7 +21,8 @@ python3利用互信息和左右信息熵的中文分词新词发现
 使用方式
 ========
     from model import TrieNode
-    # 得到 TOP5 得分的新词
+
+# 得到 TOP5 得分的新词
     # result里面存储的是所有新词和其得分，add_word里面是top5
     result, add_word = root.wordFind(5)
 
@@ -74,4 +75,5 @@ python3利用互信息和左右信息熵的中文分词新词发现
 感谢
 ========
 10/21/2018 感谢[caomaocao](https://github.com/caomaocao) 对代码遵守pep8规范、增加pipenv依赖管理和工程化的贡献
+
 09/29/2018 感谢[jiangzhonglian](https://github.com/jiangzhonglian) 对代码进行的精简和注释补充
