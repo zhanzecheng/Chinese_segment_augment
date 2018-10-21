@@ -73,4 +73,5 @@ python3利用互信息和左右信息熵的中文分词新词发现
 
 感谢
 ========
-9/29/2018 感谢[jiangzhonglian](https://github.com/jiangzhonglian) 对代码进行的精简和注释补充
+10/21/2018 感谢[caomaocao](https://github.com/caomaocao) 对代码遵守pep8规范、增加pipenv依赖管理和工程化的贡献
+09/29/2018 感谢[jiangzhonglian](https://github.com/jiangzhonglian) 对代码进行的精简和注释补充
