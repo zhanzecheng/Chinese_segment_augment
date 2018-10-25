@@ -40,12 +40,12 @@ def load_data_2_root(data):
 
 
 if __name__ == "__main__":
-    root_name = basedir + "data/root.pkl"
+    root_name = basedir + "/data/root.pkl"
     stopwords = get_stopwords()
     if os.path.exists(root_name):
         root = load_model(root_name)
     else:
-        dict_name = basedir + 'data/dict.txt'
+        dict_name = basedir + '/data/dict.txt'
         word_freq = load_dictionary(dict_name)
         root = TrieNode('*', word_freq)
         save_model(root, root_name)

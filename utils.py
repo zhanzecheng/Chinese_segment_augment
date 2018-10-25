@@ -15,7 +15,10 @@ def get_stopwords():
 
 
 def generate_ngram(input_list, n):
-    return zip(*[input_list[i:] for i in range(n)])
+    result = []
+    for i in range(1, n+1):
+        result.extend(zip(*[input_list[j:] for j in range(i)]))
+    return result
 
 
 def load_dictionary(filename):
