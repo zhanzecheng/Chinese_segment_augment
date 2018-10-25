@@ -81,6 +81,7 @@ class TrieNode(object):
         length = len(word)
         node = self.root
         if length == 3:
+            word = list(word)
             word[0], word[1], word[2] = word[1], word[2], word[0]
 
             for count, char in enumerate(word):
