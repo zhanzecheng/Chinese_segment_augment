@@ -245,11 +245,14 @@ class TrieNode(object):
         for d in result[1: N]:
             flag = True
             for tmp in dict_list:
-                pre = tmp.split('_')[0]
+				# 修改了这里,因为这里如果想要(A和B)组合后(B和C)不能进行组合
+				# 需要考虑两种情况：1.先添加(A和B), 后添加(B和C); 2.先添加(B和C), 后添加(A和B);
+                pre = tmp.split('_')
+                now = d[0].split('_')
                 # 新出现单词后缀，再老词的前缀中 or 如果发现新词，出现在列表中; 则跳出循环 
                 # 前面的逻辑是： 如果A和B组合，那么B和C就不能组合(这个逻辑有点问题)，例如：`蔡_英文` 出现，那么 `英文_也` 这个不是新词
                 # 疑惑: **后面的逻辑，这个是完全可能出现，毕竟没有重复**
-                if d[0].split('_')[-1] == pre or "".join(tmp.split('_')) in "".join(d[0].split('_')):
+                if now[-1] == pre[0] or now[0] == pre[-1] or "".join(tmp.split('_')) in "".join(d[0].split('_')):
                     flag = False
                     break
             if flag:
