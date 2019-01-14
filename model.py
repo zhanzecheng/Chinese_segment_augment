@@ -245,8 +245,8 @@ class TrieNode(object):
         for d in result[1: N]:
             flag = True
             for tmp in dict_list:
-				# 修改了这里,因为这里如果想要(A和B)组合后(B和C)不能进行组合
-				# 需要考虑两种情况：1.先添加(A和B), 后添加(B和C); 2.先添加(B和C), 后添加(A和B);
+		# 修改了这里,因为这里如果想要(A和B)组合后(B和C)不能进行组合
+		# 需要考虑两种情况：1.先添加(A和B), 后添加(B和C); 2.先添加(B和C), 后添加(A和B);
                 pre = tmp.split('_')
                 now = d[0].split('_')
                 # 新出现单词后缀，再老词的前缀中 or 如果发现新词，出现在列表中; 则跳出循环 
