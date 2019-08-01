@@ -20,7 +20,8 @@ class Node(object):
         # 用来计数
         self.count = 0
         # 用来存放节点
-        self.child = []
+        # self.child = []
+        self.child = {}
         # 方便计算 左右熵
         # 判断是否是后缀（标识后缀用的，也就是记录 b->c->a 变换后的标记）
         self.isback = False
@@ -46,7 +47,8 @@ class TrieNode(object):
             new_node = Node(key)
             new_node.count = int(values)
             new_node.word_finish = True
-            node.child.append(new_node)
+            # node.child.append(new_node)
+            node.child[key] = new_node
 
     def add(self, word):
         """
@@ -60,16 +62,21 @@ class TrieNode(object):
         for count, char in enumerate(word):
             found_in_child = False
             # 在节点中找字符
-            for child in node.child:
-                if char == child.char:
-                    node = child
-                    found_in_child = True
-                    break
+            # for child in node.child:
+            #     if char == child.char:
+            #         node = child
+            #         found_in_child = True
+            #         break
+
+            if char in node.child:
+                node = node.child[char]
+                found_in_child = True
 
             # 顺序在节点后面添加节点。 a->b->c
             if not found_in_child:
                 new_node = Node(char)
-                node.child.append(new_node)
+                # node.child.append(new_node)
+                node.child[char] = new_node
                 node = new_node
 
             # 判断是否是最后一个节点，这个词每出现一次就+1
@@ -88,23 +95,29 @@ class TrieNode(object):
                 found_in_child = False
                 # 在节点中找字符（不是最后的后缀词）
                 if count != length - 1:
-                    for child in node.child:
-                        if char == child.char:
-                            node = child
-                            found_in_child = True
-                            break
+                    # for child in node.child:
+                    #     if char == child.char:
+                    #         node = child
+                    #         found_in_child = True
+                    #         break
+                    if char in node.child:
+                        node = node.child[char]
+                        found_in_child = True
                 else:
                     # 由于初始化的 isback 都是 False， 所以在追加 word[2] 后缀肯定找不到
-                    for child in node.child:
-                        if char == child.char and child.isback:
-                            node = child
-                            found_in_child = True
-                            break
+                    # for child in node.child:
+                    #     if char == child.char and child.isback:
+                    #         node = child
+                    #         found_in_child = True
+                    #         break
+                    if char in node.child and node.child[char].isback:
+                        node = node.child[char]
+                        found_in_child = True
 
                 # 顺序在节点后面添加节点。 b->c->a
                 if not found_in_child:
                     new_node = Node(char)
-                    node.child.append(new_node)
+                    node.child[char] = new_node
                     node = new_node
 
                 # 判断是否是最后一个节点，这个词每出现一次就+1
@@ -125,14 +138,17 @@ class TrieNode(object):
 
         # 计算 1 gram 总的出现次数
         total = 0
-        for child in node.child:
-            if child.word_finish is True:
-                total += child.count
+        # for child in node.child:
+        #     if child.word_finish is True:
+        #         total += child.count
+        for node_child in node.child.values():
+            if node_child.word_finish:
+                total += node_child.count
 
         # 计算 当前词 占整体的比例
-        for child in node.child:
-            if child.word_finish is True:
-                result[child.char] = child.count / total
+        for node_child in node.child.values():
+            if node_child.word_finish:
+                result[node_child.char] = node_child.count / total
         return result, total
 
     def search_bi(self):
@@ -148,13 +164,26 @@ class TrieNode(object):
         total = 0
         # 1 grem 各词的占比，和 1 grem 的总次数
         one_dict, total_one = self.search_one()
-        for child in node.child:
-            for ch in child.child:
+        # for child in node.child:
+        #     for ch in child.child:
+        #         if ch.word_finish is True:
+        #             total += ch.count
+        # for child in node.child:
+        #     for ch in child.child:
+        #         if ch.word_finish is True:
+        #             # 互信息值越大，说明 a,b 两个词相关性越大
+        #             PMI = math.log(max(ch.count, 1), 2) - math.log(total, 2) - math.log(one_dict[child.char],  2) - math.log(one_dict[ch.char], 2)
+        #             # 这里做了PMI阈值约束
+        #             if PMI > self.PMI_limit:
+        #                 # 例如: dict{ "a_b": (PMI, 出现概率), .. }
+        #                 result[child.char + '_' + ch.char] = (PMI, ch.count / total)
+        for child in node.child.values():
+            for ch in child.child.values():
                 if ch.word_finish is True:
                     total += ch.count
 
-        for child in node.child:
-            for ch in child.child:
+        for child in node.child.values():
+            for ch in child.child.values():
                 if ch.word_finish is True:
                     # 互信息值越大，说明 a,b 两个词相关性越大
                     PMI = math.log(max(ch.count, 1), 2) - math.log(total, 2) - math.log(one_dict[child.char],
@@ -176,16 +205,27 @@ class TrieNode(object):
         node = self.root
         if not node.child:
             return False, 0
-
-        for child in node.child:
-            for cha in child.child:
+        # for child in node.child:
+        #     for cha in child.child:
+        #         total = 0
+        #         p = 0.0
+        #         for ch in cha.child:
+        #             if ch.word_finish is True and ch.isback:
+        #                 total += ch.count
+        #         for ch in cha.child:
+        #             if ch.word_finish is True and ch.isback:
+        #                 p += (ch.count / total) * math.log(ch.count / total, 2)
+        #         # 计算的是信息熵
+        #         result[child.char + cha.char] = -p
+        for child in node.child.values():
+            for cha in child.child.values():
                 total = 0
                 p = 0.0
-                for ch in cha.child:
-                    if ch.word_finish is True and ch.isback:
+                for ch in cha.child.values():
+                    if ch.word_finish and ch.isback:
                         total += ch.count
-                for ch in cha.child:
-                    if ch.word_finish is True and ch.isback:
+                for ch in cha.child.values():
+                    if ch.word_finish and ch.isback:
                         p += (ch.count / total) * math.log(ch.count / total, 2)
                 # 计算的是信息熵
                 result[child.char + cha.char] = -p
@@ -202,14 +242,14 @@ class TrieNode(object):
         if not node.child:
             return False, 0
 
-        for child in node.child:
-            for cha in child.child:
+        for child in node.child.values():
+            for cha in child.child.values():
                 total = 0
                 p = 0.0
-                for ch in cha.child:
+                for ch in cha.child.values():
                     if ch.word_finish is True and not ch.isback:
                         total += ch.count
-                for ch in cha.child:
+                for ch in cha.child.values():
                     if ch.word_finish is True and not ch.isback:
                         p += (ch.count / total) * math.log(ch.count / total, 2)
                 # 计算的是信息熵
